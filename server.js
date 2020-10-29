@@ -22,57 +22,109 @@ connection.connect(function (err) {
   start();
 });
 
+const questions = {
+  type: "list",
+  message: "What would you like to do next?",
+  name: "action",
+  choices: [
+    "Add Employees",
+    "Add Departments",
+    "Add Roles",
+    "View All Employees",
+    "View All Departments",
+    "View All Roles",
+    "View Employee by Managers",
+    "Update Employee Managers",
+    "Update Employee Roles",
+    "Remove Employees",
+    "Remove Departments",
+    "Remove Roles",
+    "Exit",
+  ],
+}
 function start() {
   inquirer
-    .prompt({
-      type: "list",
-      message: "What would you like to do?",
-      name: "action",
-      choices: [
-        "Add Employee",
-        "Remove Employee",
-        "Update Employee",
-        "Update Depertment",
-        "Update Role",
-      ],
-    })
-    .then(function (ans) {
-      switch (ans) {
-        case "Add Employee":
-          addEmployee();
+    .prompt(questions)
+    .then(function (res) {
+      switch (res) {
+        case "Add Employees":
+          addEmployees();
           break;
-        case "Remove Employee":
-        case "Update Employee":
-        case "Update Depertment":
-        case "Update Role":
+        case "Add Departments":
+          addDepartments();
+          break;
+
+        case "Add Roles":
+          addRoles();
+          break;
+        case "View All Employees":
+          viewAllEmployees();
+          break;
+        case "View Employee by Managers":
+          viewAllEmployeeByManager();
+          break;
+        case "View All Departments":
+          viewAllDepartments();
+          break;
+        case "View All Roles":
+          viewAllRoles();
+          break;
+        case "Update Employee Managers":
+          updateEmployeeManager();
+          break;
+        case "Update Employee Roles":
+          updateEmployeeRoles();
+          break;
+
+        case "Remove Employees":
+          removeEmployee();
+          break;
+        case "Remove Departments":
+          removeDepartment();
+          break;
+        case "Remove Roles":
+          removeRole();
+          break;
+        case "Exit":
+          exit();
+          break;
       }
     });
 }
-
-function addEmployee() {}
+// Add functions
+function addEmployees() {}
 
 function addRoles() {}
 
 function addDepartments() {}
 
-function removeEmployee() {}
+// Update functions
 
-function viewAllEmployee() {}
-
-function updateEmployeeRole() {}
+function updateEmployeeRoles() {}
 
 function updateEmployeeManager() {}
 
+// Select functions
+function viewAllEmployees() {}
+
 function viewAllEmployeeByManager() {}
 
-function viewAllEmployeeByDepertment() {}
+function viewAllRoles() {}
 
-function viewAllRoles(){}
+function viewAllDepartments(){}
+
+// function viewAllEmployeeByDepertment() {}
+
+
+// Delete functions
+
+function removeEmployee() {}
 
 function removeDepartment() {}
 
 function removeRole() {}
 
+//  function to to end database connection
 function exit() {
   connection.end();
 }
