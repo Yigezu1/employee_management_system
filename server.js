@@ -133,7 +133,21 @@ function addRoles() {
           },
           function (err) {
             if (err) throw new Error(err);
-            connection.end();
+            inquirer
+            .prompt({
+              type: "list",
+              message: `Would you like to continue adding roles?`,
+              name: "confirm",
+              choices: ["Yes", "No"],
+            })
+            .then(function (response) {      
+              const respond = response.confirm;
+              if (respond === "Yes") {
+                addDepartments();
+              } else {
+                start();
+              }
+            });
           }
         );
       });
@@ -159,19 +173,21 @@ function addDepartments() {
         function (err) {
           if (err) throw new Error(err);
           inquirer
-            .prompt({
-              type: "list",
-              message: "Would you like to continue adding departments?",
-              name: "confirm",
-              choices: ["Yes", "No"],
-            })
-            .then(function (response) {
-              if (response.confirm === "Yes") {
-                addDepartments();
-              } else {
-                start();
-              }
-            });
+          .prompt({
+            type: "list",
+            message: `Would you like to continue adding departments?`,
+            name: "confirm",
+            choices: ["Yes", "No"],
+          })
+          .then(function (response) {      
+            const respond = response.confirm;
+            if (respond === "Yes") {
+              addDepartments();
+            } else {
+              start();
+            }
+          });
+
         }
       );
     });
@@ -202,6 +218,9 @@ function removeDepartment() {}
 
 function removeRole() {}
 
+function promting(input) {
+
+}
 //  function to to end database connection
 function exit() {
   connection.end();
