@@ -41,62 +41,96 @@ const questions = {
     "Remove Roles",
     "Exit",
   ],
-}
+};
 function start() {
-  inquirer
-    .prompt(questions)
-    .then(function (res) {
-      switch (res) {
-        case "Add Employees":
-          addEmployees();
-          break;
-        case "Add Departments":
-          addDepartments();
-          break;
+  inquirer.prompt(questions).then(function (res) {
+    console.log(res);
+    switch (res.action) {
+      case "Add Employees":
+        addEmployees();
+        break;
+      case "Add Departments":
+        addDepartments();
+        break;
 
-        case "Add Roles":
-          addRoles();
-          break;
-        case "View All Employees":
-          viewAllEmployees();
-          break;
-        case "View Employee by Managers":
-          viewAllEmployeeByManager();
-          break;
-        case "View All Departments":
-          viewAllDepartments();
-          break;
-        case "View All Roles":
-          viewAllRoles();
-          break;
-        case "Update Employee Managers":
-          updateEmployeeManager();
-          break;
-        case "Update Employee Roles":
-          updateEmployeeRoles();
-          break;
+      case "Add Roles":
+        addRoles();
+        break;
+      case "View All Employees":
+        viewAllEmployees();
+        break;
+      case "View Employee by Managers":
+        viewAllEmployeeByManager();
+        break;
+      case "View All Departments":
+        viewAllDepartments();
+        break;
+      case "View All Roles":
+        viewAllRoles();
+        break;
+      case "Update Employee Managers":
+        updateEmployeeManager();
+        break;
+      case "Update Employee Roles":
+        updateEmployeeRoles();
+        break;
 
-        case "Remove Employees":
-          removeEmployee();
-          break;
-        case "Remove Departments":
-          removeDepartment();
-          break;
-        case "Remove Roles":
-          removeRole();
-          break;
-        case "Exit":
-          exit();
-          break;
-      }
-    });
+      case "Remove Employees":
+        removeEmployee();
+        break;
+      case "Remove Departments":
+        removeDepartment();
+        break;
+      case "Remove Roles":
+        removeRole();
+        break;
+      case "Exit":
+        exit();
+        break;
+    }
+  });
 }
 // Add functions
 function addEmployees() {}
 
 function addRoles() {}
 
-function addDepartments() {}
+function addDepartments() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "depName",
+        message: "What is the name of the department?",
+      },
+    ])
+    .then(function (res) {
+      const { depName } = res;
+      connection.query(
+        `INSERT INTO departments SET ?`,
+        {
+          name: depName,
+        },
+        function (err) {
+          if (err) throw new Error(err);
+          inquirer
+            .prompt({
+              type: "list",
+              message: "Would you like to continue adding departments?",
+              name: "confirm",
+              choices: ["Yes", "No"],
+            })
+            .then(function (response) {
+              if (response.confirm === "Yes") {
+                addDepartments();
+              } else {
+                start();
+              }
+            });
+        }
+      );
+    });
+}
 
 // Update functions
 
@@ -111,10 +145,9 @@ function viewAllEmployeeByManager() {}
 
 function viewAllRoles() {}
 
-function viewAllDepartments(){}
+function viewAllDepartments() {}
 
 // function viewAllEmployeeByDepertment() {}
-
 
 // Delete functions
 
