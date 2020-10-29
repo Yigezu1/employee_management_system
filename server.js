@@ -93,7 +93,52 @@ function start() {
 // Add functions
 function addEmployees() {}
 
-function addRoles() {}
+function addRoles() {
+  connection.query("SELECT * FROM departments", function (err, data) {
+    if (err) throw new Error(err);
+    const dep = [];
+    const depId = [];
+    data.forEach((element) => {
+      dep.push(element.name);
+      depId.push(element.id);
+    });
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          message: "What is the title of this new role?",
+          name: "title",
+        },
+        {
+          type: "number",
+          message: "What is the salary of this new role?",
+          name: "salary",
+        },
+        {
+          type: "list",
+          message: "What department is this new role for?",
+          name: "department",
+          choices: dep,
+        },
+      ])
+      .then(function (resp) {
+        const departmentId = depId[dep.indexOf(resp.department)];
+        console.log(departmentId);
+        connection.query(
+          "INSERT INTO roles SET?",
+          {
+            title: resp.title.toLowerCase(),
+            salary: resp.salary,
+            department_id: departmentId,
+          },
+          function (err) {
+            if (err) throw new Error(err);
+            connection.end();
+          }
+        );
+      });
+  });
+}
 
 function addDepartments() {
   inquirer
@@ -109,7 +154,7 @@ function addDepartments() {
       connection.query(
         `INSERT INTO departments SET ?`,
         {
-          name: depName,
+          name: depName.toLowerCase(),
         },
         function (err) {
           if (err) throw new Error(err);
