@@ -443,7 +443,13 @@ function viewAllRoles() {
   })
 }
 
-function viewAllDepartments() {}
+function viewAllDepartments() {
+  connection.query(`SELECT id, (name) AS Name FROM departments`, function(err, data){
+    if(err) throw new Error(err);
+    console.log(cTable.getTable(data));
+    start();
+  });
+}
 
 // function viewAllEmployeeByDepertment() {}
 
