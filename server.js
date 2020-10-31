@@ -189,7 +189,8 @@ function addEmployees() {
         let managerID = "";
 
         connection.query(
-          `SELECT * FROM roles WHERE title = ? AND department_id = ?`, [role, deprtId],
+          `SELECT * FROM roles WHERE title = ? AND department_id = ?`,
+          [role, deprtId],
           // {
           //   title: role,
           //   department_id: deprtId,
@@ -217,7 +218,8 @@ function addEmployees() {
               const managerLastName = emplLastN[manIndex];
 
               connection.query(
-                "SELECT id FROM employees WHERE first_name = ? AND last_name = ? AND role_id = ?", [managerFirstName, managerLastName, roleId],
+                "SELECT id FROM employees WHERE first_name = ? AND last_name = ? AND role_id = ?",
+                [managerFirstName, managerLastName, roleId],
                 // {
                 //   first_name: managerFirstName,
                 //   last_name: managerLastName,
@@ -416,7 +418,17 @@ function updateEmployeeRoles() {}
 function updateEmployeeManager() {}
 
 // Select functions
-function viewAllEmployees() {}
+function viewAllEmployees() {
+  const allEmp = [];
+  connection.query(
+    `SELECT employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS Role FROM employees LEFT JOIN roles ON employees.role_id = roles.id`,
+    function (err, data) {
+      if(err) throw new Error(err);
+     console.log(cTable.getTable(data));
+      start();
+    }
+  );
+}
 
 function viewAllEmployeeByManager() {}
 
