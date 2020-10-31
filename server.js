@@ -432,7 +432,16 @@ function viewAllEmployees() {
 
 function viewAllEmployeeByManager() {}
 
-function viewAllRoles() {}
+function viewAllRoles() {
+  connection.query(`SELECT roles.id, (roles.title) AS Role, (departments.name) AS Department FROM roles
+  LEFT JOIN departments ON departments.id = roles.department_id
+  `,
+  function(err, data){
+    if(err) throw new Error(err);
+    console.log(cTable.getTable(data));
+    start();
+  })
+}
 
 function viewAllDepartments() {}
 
