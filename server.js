@@ -423,29 +423,44 @@ function viewAllEmployees() {
   connection.query(
     `SELECT employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS Role FROM employees LEFT JOIN roles ON employees.role_id = roles.id`,
     function (err, data) {
-      if(err) throw new Error(err);
-     console.log(cTable.getTable(data));
+      if (err) throw new Error(err);
+      console.log(cTable.getTable(data));
       start();
     }
   );
 }
 
-function viewAllEmployeeByManager() {}
+function viewAllEmployeeByManager() {
+  connection.query(
+    `SELECT id, (first_name) AS 'First Name', (last_name) AS 'Last Name', (manager_id) AS ManagerId, 
+    (SELECT first_name FROM employees WHERE id = ManagerId) AS Manager FROM employees ORDER BY Manager DESC`,
+    function (err, data) {
+      if (err) throw new Error(err);
+      console.log(cTable.getTable(data));
+      start();
+    }
+  );
+}
 
 function viewAllRoles() {
-  connection.query(`SELECT roles.id, (roles.title) AS Role, (departments.name) AS Department FROM roles
+  connection.query(
+    `SELECT roles.id, (roles.title) AS Role, (departments.name) AS Department FROM roles
   LEFT JOIN departments ON departments.id = roles.department_id
   `,
-  function(err, data){
-    if(err) throw new Error(err);
-    console.log(cTable.getTable(data));
-    start();
-  })
+    function (err, data) {
+      if (err) throw new Error(err);
+      console.log(cTable.getTable(data));
+      start();
+    }
+  );
 }
 
 function viewAllDepartments() {
-  connection.query(`SELECT id, (name) AS Name FROM departments`, function(err, data){
-    if(err) throw new Error(err);
+  connection.query(`SELECT id, (name) AS Name FROM departments`, function (
+    err,
+    data
+  ) {
+    if (err) throw new Error(err);
     console.log(cTable.getTable(data));
     start();
   });
@@ -461,7 +476,6 @@ function removeDepartment() {}
 
 function removeRole() {}
 
-function promting(input) {}
 //  function to to end database connection
 function exit() {
   connection.end();
