@@ -625,7 +625,23 @@ function removeEmployee() {
   });
 }
 
-function removeDepartment() {}
+function removeDepartment() {
+  inquirer.prompt({
+    type: "input",
+    message:"Provide the name of the department you want to remove!",
+    name: "depToReove"
+  }).then(function(res){
+    connection.query(`DELETE FROM departments WHERE ?`, 
+    {
+      name: res.depToReove
+    },
+    function(err, resp){
+      if(err) throw new Error(err);
+      console.log(resp.affectedRows + " department deleted!\n");
+      start();
+    });
+  });
+}
 
 function removeRole() {}
 
