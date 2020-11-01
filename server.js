@@ -413,7 +413,115 @@ function addDepartments() {
 
 // Update functions
 
-function updateEmployeeRoles() {}
+function updateEmployeeRoles() {
+  const depArray = [];
+  const depArrayId = [];
+  const roleTitle = [];
+  const roleChangeQ = [
+    {
+      type: "input",
+      name: "firstName",
+      message:
+        "What is the first name of the employee you want to update the role for?",
+    },
+    {
+      type: "input",
+      name: "lastName",
+      message:
+        "What is the last name of the employee you want to update the role for?",
+    },
+    {
+      type: "number",
+      name: "empId",
+      message: "What is the employee's Id?",
+    },
+  ];
+  connection.query(`SELECT DISTINCT(title)FROM roles`, function (err, data) {
+    if (err) throw new Error(err);
+    data.forEach((element) => {
+      roleTitle.push(element.title);
+    });
+    const currentlq = {
+      type: "list",
+      name: "currentRole",
+      message: "What is the current role of the employee",
+      choices: roleTitle,
+    };
+    const newroleq = {
+      type: "list",
+      name: "newRole",
+      message: "What is the new role of the employee",
+      choices: roleTitle,
+    };
+    connection.query(`SELECT * FROM departments`, function (err, data) {
+      if (err) throw new Error(err);
+      data.forEach((element) => {
+        depArray.push(element.name);
+        depArrayId.push(element.id);
+      });
+      const depQ = {
+        type: "list",
+        name: "Dpt",
+        message: "What is the employee's Dept?",
+        choices: depArray,
+      };
+      roleChangeQ.push(depQ, currentlq, newroleq);
+      inquirer.prompt(roleChangeQ).then(function (res) {
+        // code here
+        console.log(res);
+        const depId = depArrayId[depArray.indexOf(res.Dpt)];
+
+        connection.query(
+          `SELECT * FROM employees WHERE id = ? AND first_name = ? AND last_name=?`,
+          [res.empId, res.firstName, res.lastName],
+          function (err, data) {
+            if (err) throw new Error(err);
+            if (!data) {
+              console.log(
+                "Record can't be found with the specified information."
+              );
+              start();
+            } else {
+              // employee identified. Then check for the existance of the role
+              connection.query(
+                `SELECT * FROM roles WHERE department_id = ? AND title = ?`,
+                [depId, res.newRole],
+                function (err, data) {
+                  if (err) throw new Error(err);
+                  if (!data) {
+                    console.log(
+                      "No role is found with the specified information. Please create the role first."
+                    );
+                    start();
+                  } else {
+                    const roleID = data[0].id;
+                    connection.query(
+                      `UPDATE employees SET ? WHERE ?`,
+                      [
+                        {
+                          role_id: roleID,
+                        },
+                        {
+                          id: res.empId,
+                        },
+                      ],
+                      function (err) {
+                        if (err) throw new Error(err);
+                        //  additional code here
+                        console.log("Record has been successfully updated!");
+                        start();
+                      }
+                    );
+                  }
+                }
+              );
+            }
+          }
+        );
+      });
+    });
+  });
+}
 
 function updateEmployeeManager() {}
 
