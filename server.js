@@ -505,7 +505,7 @@ function updateEmployeeRoles() {
                           id: res.empId,
                         },
                       ],
-                      function (err,resp) {
+                      function (err, resp) {
                         if (err) throw new Error(err);
                         //  additional code here
                         console.log(resp.affectedRows + " employee updated!\n");
@@ -581,20 +581,20 @@ function viewAllDepartments() {
 function removeEmployee() {
   const empTobeDeletedInfo = [
     {
-      type: "number",      
+      type: "number",
       message:
         "What is the id of the employee you want to remove from the database?",
-        name: "empID"
+      name: "empID",
     },
     {
-      type: "input",      
+      type: "input",
       message: "What is the first name of the employee?",
-      name: "empFirstName"
+      name: "empFirstName",
     },
     {
-      type: "input",      
+      type: "input",
       message: "What is the last name of the employee?",
-      name: "empLastName"
+      name: "empLastName",
     },
   ];
   inquirer.prompt(empTobeDeletedInfo).then(function (res) {
@@ -626,24 +626,63 @@ function removeEmployee() {
 }
 
 function removeDepartment() {
-  inquirer.prompt({
-    type: "input",
-    message:"Provide the name of the department you want to remove!",
-    name: "depToReove"
-  }).then(function(res){
-    connection.query(`DELETE FROM departments WHERE ?`, 
-    {
-      name: res.depToReove
-    },
-    function(err, resp){
-      if(err) throw new Error(err);
-      console.log(resp.affectedRows + " department deleted!\n");
-      start();
+  inquirer
+    .prompt({
+      type: "input",
+      message: "Provide the name of the department you want to remove!",
+      name: "depToReove",
+    })
+    .then(function (res) {
+      connection.query(
+        `DELETE FROM departments WHERE ?`,
+        {
+          name: res.depToReove,
+        },
+        function (err, resp) {
+          if (err) throw new Error(err);
+          console.log(resp.affectedRows + " department deleted!\n");
+          start();
+        }
+      );
     });
-  });
 }
 
-function removeRole() {}
+function removeRole() {
+  const depT = [];
+  const depID = [];
+  connection.query(`SELECT * FROM departments`, function (err, data) {
+    if (err) throw new Error(err);
+    data.forEach((element) => {
+      depT.push(element.name);
+      depID.push(element.id);
+    });
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          message: "What role you would like to remove?",
+          name: "roleToRemove",
+        },
+        {
+          type: "list",
+          message: "What department this role for?",
+          name: "depOfRole",
+          choices: depT,
+        },
+      ])
+      .then(function (res) {
+        connection.query(
+          `DELETE FROM roles WHERE title = ? AND department_id = ?`,
+          [res.roleToRemove, depID[depT.indexOf(res.depOfRole)]],
+          function (err, resp) {
+            if (err) throw new Error(err);
+            console.log(resp.affectedRows + " role deleted!\n");
+            start();
+          }
+        );
+      });
+  });
+}
 
 //  function to to end database connection
 function exit() {
