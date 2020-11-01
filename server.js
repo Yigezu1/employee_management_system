@@ -476,7 +476,7 @@ function updateEmployeeRoles() {
           [res.empId, res.firstName, res.lastName],
           function (err, data) {
             if (err) throw new Error(err);
-            if (!data) {
+            if (!data.length) {
               console.log(
                 "Record can't be found with the specified information."
               );
@@ -488,7 +488,7 @@ function updateEmployeeRoles() {
                 [depId, res.newRole],
                 function (err, data) {
                   if (err) throw new Error(err);
-                  if (!data) {
+                  if (!data.length) {
                     console.log(
                       "No role is found with the specified information. Please create the role first."
                     );
@@ -505,10 +505,10 @@ function updateEmployeeRoles() {
                           id: res.empId,
                         },
                       ],
-                      function (err) {
+                      function (err,resp) {
                         if (err) throw new Error(err);
                         //  additional code here
-                        console.log("Record has been successfully updated!");
+                        console.log(resp.affectedRows + " employee updated!\n");
                         start();
                       }
                     );
@@ -578,7 +578,52 @@ function viewAllDepartments() {
 
 // Delete functions
 
-function removeEmployee() {}
+function removeEmployee() {
+  const empTobeDeletedInfo = [
+    {
+      type: "number",      
+      message:
+        "What is the id of the employee you want to remove from the database?",
+        name: "empID"
+    },
+    {
+      type: "input",      
+      message: "What is the first name of the employee?",
+      name: "empFirstName"
+    },
+    {
+      type: "input",      
+      message: "What is the last name of the employee?",
+      name: "empLastName"
+    },
+  ];
+  inquirer.prompt(empTobeDeletedInfo).then(function (res) {
+    // check the correct employee
+    connection.query(
+      `SELECT * FROM employees WHERE id = ? AND first_name = ? AND last_name = ? `,
+      [res.empID, res.empFirstName, res.empLastName],
+      function (err, data) {
+        if (err) throw new Error(err);
+        if (!res.affectedRows) {
+          console.log("Employee with the provided information doesn't exist!");
+          start();
+        } else {
+          connection.query(
+            "DELETE FROM employees WHERE ?",
+            {
+              id: res.empID,
+            },
+            function (err, res) {
+              if (err) throw err;
+              console.log(res.affectedRows + " employee deleted!\n");
+              start();
+            }
+          );
+        }
+      }
+    );
+  });
+}
 
 function removeDepartment() {}
 
