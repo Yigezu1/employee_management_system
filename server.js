@@ -523,37 +523,6 @@ function updateEmployeeRoles() {
   });
 }
 
-/* function updateEmployeeManager() {
-  const updateEmployeeQ = [
-    {
-      type: "input",
-      message: "What is the first name of the employee?",
-      name:"empFirstName"
-    },
-    {
-      type: "input",
-      message: "What is the first name of the employee?",
-      name:"empLastName"
-    },
-    {
-      type: "number",
-      message: "What is the id of the employee?",
-      name:"empFirstName"
-    },
-    {
-      type: "input",
-      message: "What is first name of the new manager?",
-      name:"empFirstName"
-    },
-    {
-      type: "input",
-      message: "What is first name of the new manager?",
-      name:"empFirstName"
-    }
-  ]
-  inquirer.prompt()
-} */
-
 // Select functions
 function viewAllEmployees() {
   const allEmp = [];
@@ -603,7 +572,6 @@ function viewAllDepartments() {
   });
 }
 
-// function viewAllEmployeeByDepertment() {}
 
 // Delete functions
 
