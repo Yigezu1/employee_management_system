@@ -33,7 +33,7 @@ const questions = {
     "View All Employees",
     "View All Departments",
     "View All Roles",
-    "View Employee by Managers",    
+    "View Employee by Managers",
     "Update Employee Roles",
     "Remove Employees",
     "Remove Departments",
@@ -69,7 +69,7 @@ function start() {
         viewAllRoles();
         break;
       case "View Departments Total Utilized Budget":
-        departmentsTotalUtilizedBudget()
+        departmentsTotalUtilizedBudget();
         break;
       case "Update Employee Roles":
         updateEmployeeRoles();
@@ -524,10 +524,12 @@ function updateEmployeeRoles() {
 }
 
 // Select functions
-function viewAllEmployees() {
-  const allEmp = [];
+function viewAllEmployees() {  
   connection.query(
-    `SELECT employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS Role FROM employees LEFT JOIN roles ON employees.role_id = roles.id`,
+    `SELECT employees.first_name AS 'First Name', employees.last_name AS 'Last Name', 
+    roles.department_id AS DepartmentID, roles.title AS Role, roles.salary AS Salary, 
+    (SELECT departments.name FROM departments WHERE id = DepartmentID )  AS Department FROM employees 
+    LEFT JOIN roles ON employees.role_id = roles.id`,
     function (err, data) {
       if (err) throw new Error(err);
       console.log(cTable.getTable(data));
@@ -571,7 +573,6 @@ function viewAllDepartments() {
     start();
   });
 }
-
 
 // Delete functions
 
@@ -681,13 +682,15 @@ function removeRole() {
   });
 }
 // function to find department budget
-function departmentsTotalUtilizedBudget(){
-connection.query("SELECT (id) AS Dep_Id, (name) AS 'Department Name', (SELECT SUM(salary) FROM roles WHERE department_id = Dep_Id) AS 'Total Utilized Budget' FROM departments", 
-function(err, data){
-if(err) throw new Error(err);
-console.log(cTable.getTable(data));
-start();
-});
+function departmentsTotalUtilizedBudget() {
+  connection.query(
+    "SELECT (id) AS Dep_Id, (name) AS 'Department Name', (SELECT SUM(salary) FROM roles WHERE department_id = Dep_Id) AS 'Total Utilized Budget' FROM departments",
+    function (err, data) {
+      if (err) throw new Error(err);
+      console.log(cTable.getTable(data));
+      start();
+    }
+  );
 }
 //  function to to end database connection
 function exit() {
