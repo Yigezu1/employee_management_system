@@ -33,12 +33,12 @@ const questions = {
     "View All Employees",
     "View All Departments",
     "View All Roles",
-    "View Employee by Managers",
-    "Update Employee Managers",
+    "View Employee by Managers",    
     "Update Employee Roles",
     "Remove Employees",
     "Remove Departments",
     "Remove Roles",
+    "View Departments Total Utilized Budget",
     "Exit",
   ],
 };
@@ -68,8 +68,8 @@ function start() {
       case "View All Roles":
         viewAllRoles();
         break;
-      case "Update Employee Managers":
-        updateEmployeeManager();
+      case "View Departments Total Utilized Budget":
+        departmentsTotalUtilizedBudget()
         break;
       case "Update Employee Roles":
         updateEmployeeRoles();
@@ -523,7 +523,36 @@ function updateEmployeeRoles() {
   });
 }
 
-function updateEmployeeManager() {}
+/* function updateEmployeeManager() {
+  const updateEmployeeQ = [
+    {
+      type: "input",
+      message: "What is the first name of the employee?",
+      name:"empFirstName"
+    },
+    {
+      type: "input",
+      message: "What is the first name of the employee?",
+      name:"empLastName"
+    },
+    {
+      type: "number",
+      message: "What is the id of the employee?",
+      name:"empFirstName"
+    },
+    {
+      type: "input",
+      message: "What is first name of the new manager?",
+      name:"empFirstName"
+    },
+    {
+      type: "input",
+      message: "What is first name of the new manager?",
+      name:"empFirstName"
+    }
+  ]
+  inquirer.prompt()
+} */
 
 // Select functions
 function viewAllEmployees() {
@@ -683,7 +712,15 @@ function removeRole() {
       });
   });
 }
-
+// function to find department budget
+function departmentsTotalUtilizedBudget(){
+connection.query("SELECT (id) AS Dep_Id, (name) AS 'Department Name', (SELECT SUM(salary) FROM roles WHERE department_id = Dep_Id) AS 'Total Utilized Budget' FROM departments", 
+function(err, data){
+if(err) throw new Error(err);
+console.log(cTable.getTable(data));
+start();
+});
+}
 //  function to to end database connection
 function exit() {
   connection.end();
