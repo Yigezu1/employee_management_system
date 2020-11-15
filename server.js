@@ -602,7 +602,7 @@ function removeEmployee() {
       [res.empID, res.empFirstName, res.empLastName],
       function (err, data) {
         if (err) throw new Error(err);
-        if (!res.affectedRows) {
+        if (!res.data.length) {
           console.log("Employee with the provided information doesn't exist!");
           start();
         } else {
