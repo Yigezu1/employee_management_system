@@ -279,9 +279,7 @@ function addEmployees() {
                   } else {
                     // if manager removed during the process handles here
                     console.log(
-                      new Error(
-                        "Manager couldn't be found with the provided information!"
-                      )
+                      "Error: Manager couldn't be found with the provided information!"
                     );
                     whatNext();
                   }
@@ -524,7 +522,7 @@ function updateEmployeeRoles() {
 }
 
 // Select functions
-function viewAllEmployees() {  
+function viewAllEmployees() {
   connection.query(
     `SELECT employees.first_name AS 'First Name', employees.last_name AS 'Last Name', 
     roles.department_id AS DepartmentID, roles.title AS Role, roles.salary AS Salary, 
@@ -609,8 +607,8 @@ function removeEmployee() {
           connection.query(
             "DELETE FROM employees WHERE?",
             {
-              id:res.empID
-            },                         
+              id: res.empID,
+            },
             function (err, res) {
               if (err) throw err;
               console.log(res.affectedRows + " employee deleted!\n");
