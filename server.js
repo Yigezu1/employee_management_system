@@ -602,15 +602,15 @@ function removeEmployee() {
       [res.empID, res.empFirstName, res.empLastName],
       function (err, data) {
         if (err) throw new Error(err);
-        if (!res.data.length) {
+        if (!data.length) {
           console.log("Employee with the provided information doesn't exist!");
           start();
         } else {
           connection.query(
-            "DELETE FROM employees WHERE ?",
+            "DELETE FROM employees WHERE?",
             {
-              id: res.empID,
-            },
+              id:res.empID
+            },                         
             function (err, res) {
               if (err) throw err;
               console.log(res.affectedRows + " employee deleted!\n");
